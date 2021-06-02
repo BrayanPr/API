@@ -1,6 +1,4 @@
 /entorno
 .env
-
 /.vscode
-
 /__pycache__
