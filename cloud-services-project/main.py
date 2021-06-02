@@ -25,14 +25,35 @@ class Badge(Resource):
                 'city': request.json['city'],
                 'followers': request.json['followers'],
                 'likes': request.json['likes'],
-                'post': request.json['post']
+                'post': request.json['post'],
+                'posts': request.json['posts']
             }).inserted_id)
 
         return jsonify({"_id":_id})
 
     def put(self, by, data):
         response = self.abort_if_not_exist(by,data)
-    
+
+        for key, value in request.json.items():
+            response[key] = value
+
+        database.db.Badges.update_one({'_id':ObjectId(response['_id'])},
+        {'$set':{
+            'header_img_url': response['header_img_url'],
+            'profile_picture_url': response['profile_picture_url'],
+            'name': response['name'],
+            'age': response['age'],
+            'city': response['city'],
+            'followers': response['followers'],
+            'likes': response['likes'],
+            'post': response['post'],
+            'posts': response['posts']
+        }})
+
+        response['_id'] = str(response['_id'])
+        return jsonify(response)
+
+
     def abort_if_not_exist(self,by,data):
         if by == "_id":
             response = database.db.Badges.find_one({"_id":ObjectId(data)})
